@@ -1,0 +1,13 @@
+# Global configuration
+USETLS: true  # Set to false to disable SSL/TLS verification for development environments
+
+providers:
+  OPENAI:
+    MODEL: "gpt-4o"
+    ENABLED: true
+  MISTRAL:
+    MODEL: "mistral-tiny"
+    ENABLED: true
+  ANTHROPIC:
+    MODEL: "sonnet-4.0"
+    ENABLED: false  
