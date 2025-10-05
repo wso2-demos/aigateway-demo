@@ -6,6 +6,7 @@ import json
 import yaml
 import os
 from dotenv import load_dotenv
+import tiktoken
 
 # ------------------------------
 # Localisation import
@@ -54,6 +55,27 @@ def sanitize_headers_for_logging(headers):
         if len(auth_parts) > 1:
             safe_headers['Authorization'] = f"{auth_parts[0]} {mask_sensitive_data(auth_parts[1])}"
     return safe_headers
+
+def count_tokens(text, model_name="gpt-4"):
+    """Count tokens in text using OpenAI's tiktoken library"""
+    try:
+        # Map common model names to tiktoken encodings
+        model_mapping = {
+            "gpt-4": "cl100k_base",
+            "gpt-4o": "cl100k_base",
+            "gpt-3.5-turbo": "cl100k_base",
+            "text-davinci-003": "p50k_base",
+            "text-davinci-002": "p50k_base"
+        }
+
+        # Default to cl100k_base for most modern models
+        encoding_name = model_mapping.get(model_name.lower(), "cl100k_base")
+        encoding = tiktoken.get_encoding(encoding_name)
+        return len(encoding.encode(text))
+    except Exception as e:
+        print(f"[WARNING] Token counting failed: {e}")
+        # Fallback: rough estimation (1 token ≈ 4 characters)
+        return len(text) // 4
 
 # Get global SSL/TLS setting
 use_tls = config.get("USETLS", True)  # Default to True for security
@@ -562,7 +584,12 @@ else:
 
 user_question = st.text_area(question_label, value=default_question, height=100, max_chars=5000)
 
-st.markdown("<div style='margin-bottom:10px;'></div>", unsafe_allow_html=True)
+# Display token count
+if user_question:
+    token_count = count_tokens(user_question, model)
+    st.markdown(f"<div style='color:#666; font-size:0.9rem; margin-top:5px; margin-bottom:15px;'>{t('token_count', count=token_count)}</div>", unsafe_allow_html=True)
+else:
+    st.markdown("<div style='margin-bottom:10px;'></div>", unsafe_allow_html=True)
 
 if st.button(t('send'), type="primary"):
     # Basic input validation

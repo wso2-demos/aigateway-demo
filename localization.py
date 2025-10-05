@@ -27,6 +27,7 @@ TRANSLATIONS = {
         'app_provider_error': "Failed calls from {app} to {provider}: {count}",
         'no_applications_available': "No applications are configured or enabled.",
         'no_providers_for_app': "No providers are available for the selected application.",
+        'token_count': "Prompt tokens: {count}",
     },
     'es': {
         'title': "API Manager - AI Gateway",
@@ -56,6 +57,7 @@ TRANSLATIONS = {
         'app_provider_error': "Llamadas incorrectas de {app} a {provider}: {count}",
         'no_applications_available': "No hay aplicaciones configuradas o habilitadas.",
         'no_providers_for_app': "No hay proveedores disponibles para la aplicación seleccionada.",
+        'token_count': "Prompt tokens: {count}",
     }
 }
 

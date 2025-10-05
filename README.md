@@ -11,6 +11,7 @@ This application is a Streamlit interface to interact with LLM models (such as O
 - **Statistics Tracking**: Per-LLM-provider success/error counters with real-time updates
 - **OAuth Token Caching**: Efficient token management to reduce authentication overhead
 - **Dynamic Configuration**: Automatic detection of configured applications and providers
+- **Real-time Token Counting**: OpenAI tiktoken-based token counting for prompt optimization
 - **Security Features**: Credential masking, SSL/TLS configuration, and secure error handling
 - **Multi-language Support**: English and Spanish localization
 - **Theme-aware UI**: Responsive design that adapts to light/dark themes
@@ -81,6 +82,7 @@ A web interface will open where you can:
 - **Select a provider** - Choose from available LLM providers (OpenAI, Mistral, Anthropic, etc.)
 - **Choose predefined prompts** - Select from pre-configured test prompts or enter custom questions
 - **Enter your question** - Type custom questions or use predefined prompts
+- **View token counts** - See real-time token count for your prompts using OpenAI's tokenizer
 - **View responses** - See the model's response with proper error handling
 - **Monitor statistics** - View success/error counters per application-provider combination
 
