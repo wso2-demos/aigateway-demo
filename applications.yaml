@@ -17,7 +17,6 @@ applications:
     name: "Streamlit"
     description: "Streamlit"
     enabled: true
-    # Mobile app only has access to OpenLLM and Mistral
     providers: ["OPENLLM"]
     # OAuth credentials loaded from environment variables:
     # STREAMLIT_CONSUMER_KEY, STREAMLIT_CONSUMER_SECRET, STREAMLIT_TOKEN_URL
@@ -26,7 +25,6 @@ applications:
     name: "MathiasApp"
     description: "Mathias Application"
     enabled: true
-    # Mobile app only has access to OpenLLM and Mistral
     providers: ["OPENLLM"]
     # OAuth credentials loaded from environment variables:
     # MATHIAS_CONSUMER_KEY, MATHIAS_CONSUMER_SECRET, MATHIAS_TOKEN_URL
@@ -35,7 +33,6 @@ applications:
     name: "MobileApp"
     description: "Mobile Application (Basic)"
     enabled: true
-    # Mobile app only has access to OpenLLM and Mistral
     providers: ["OPENLLM"]
     # OAuth credentials loaded from environment variables:
     # MOBILE_CONSUMER_KEY, MOBILE_CONSUMER_SECRET, MOBILE_TOKEN_URL
@@ -44,7 +41,6 @@ applications:
     name: "CloudApp"
     description: "Cloud Application (Basic)"
     enabled: true
-    # Mobile app only has access to OpenLLM and Mistral
     providers: ["ANTHROPIC_CLOUD"]
     # OAuth credentials loaded from environment variables:
     # CLOUD_CONSUMER_KEY, CLOUD_CONSUMER_SECRET, CLOUD_TOKEN_URL
