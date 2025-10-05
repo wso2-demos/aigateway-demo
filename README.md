@@ -1,6 +1,19 @@
 # WSO2 API Manager - AI Gateway
 
-This application is a Streamlit interface to interact with LLM models (such as OpenAI and Mistral) through a WSO2 API Gateway, handling OAuth2 authentication and allowing you to dynamically select the AI provider.
+This application is a Streamlit interface to interact with LLM models (such as OpenAI, Mistral, and Anthropic) through a WSO2 API Gateway, featuring OAuth2 authentication, multiple application management, predefined prompts, and provider selection capabilities.
+
+## Key Features
+
+- **Multi-Application Support**: Manage multiple WSO2 applications with different provider access levels
+- **Flexible OAuth Configuration**: Support for both shared and application-specific OAuth credentials
+- **Provider Access Control**: Configure which LLM providers each application can access
+- **Predefined Prompts**: Pre-configured test prompts for common scenarios (AI engine check, semantic guards, PII testing, etc.)
+- **Statistics Tracking**: Per-LLM-provider success/error counters with real-time updates
+- **OAuth Token Caching**: Efficient token management to reduce authentication overhead
+- **Dynamic Configuration**: Automatic detection of configured applications and providers
+- **Security Features**: Credential masking, SSL/TLS configuration, and secure error handling
+- **Multi-language Support**: English and Spanish localization
+- **Theme-aware UI**: Responsive design that adapts to light/dark themes
 
 ## Requirements
 - Python 3.8+
@@ -52,9 +65,10 @@ Before installing the application, you need to set up access to the WSO2 API Gat
    pip install -r requirements.txt
    ```
 3. Configure your environment:
-   - Copy `.env.example` to `.env`
-   - Fill in your WSO2 credentials obtained from the Developer Portal
-   - The `config.yaml` file contains public configuration (models, etc.)
+   - Copy `.env.example` to `.env` and fill in your WSO2 credentials
+   - Review and customize `config.yaml` for provider settings
+   - Review and customize `applications.yaml` for application management
+   - Optionally customize `prompts.yaml` for predefined test prompts
 
 ## Usage
 Start the application with:
@@ -63,65 +77,121 @@ streamlit run demo_ui.py
 ```
 
 A web interface will open where you can:
-- Select the provider (OpenAI, Mistral, etc.)
-- Enter your question
-- View the model's response
-- See counters for successful and failed calls per provider
+- **Select an application** - Choose from configured applications with different provider access
+- **Select a provider** - Choose from available LLM providers (OpenAI, Mistral, Anthropic, etc.)
+- **Choose predefined prompts** - Select from pre-configured test prompts or enter custom questions
+- **Enter your question** - Type custom questions or use predefined prompts
+- **View responses** - See the model's response with proper error handling
+- **Monitor statistics** - View success/error counters per application-provider combination
 
 ## Configuration
 
-### Environment Variables (`.env` file)
-Sensitive credentials are stored in a `.env` file that is not tracked by git. Use the credentials and URLs obtained from your WSO2 Developer Portal setup:
+The application uses three main configuration files:
+
+### 1. Environment Variables (`.env` file)
+Sensitive credentials are stored in a `.env` file that is not tracked by git. Supports both shared and application-specific credentials:
 
 ```env
-# WSO2 Gateway Shared Credentials (from your application in WSO2 Developer Portal)
-WSO2_CONSUMER_KEY=your_consumer_key_from_wso2_app
-WSO2_CONSUMER_SECRET=your_consumer_secret_from_wso2_app
+# Shared WSO2 Gateway Credentials (fallback for all applications)
+WSO2_CONSUMER_KEY=your_shared_consumer_key
+WSO2_CONSUMER_SECRET=your_shared_consumer_secret
 WSO2_TOKEN_URL=https://your-wso2-server:9443/oauth2/token
 
+# Application-specific OAuth Credentials (optional)
+DEFAULT_CONSUMER_KEY=your_default_app_consumer_key
+DEFAULT_CONSUMER_SECRET=your_default_app_consumer_secret
+DEFAULT_TOKEN_URL=https://your-wso2-server:9443/oauth2/token
+
+STREAMLIT_CONSUMER_KEY=your_streamlit_app_consumer_key
+STREAMLIT_CONSUMER_SECRET=your_streamlit_app_consumer_secret
+STREAMLIT_TOKEN_URL=https://your-wso2-server:9443/oauth2/token
+
 # Provider-specific Chat Completions URLs (from subscribed APIs in WSO2)
-OPENAI_CHAT_COMPLETIONS_URL=https://your-wso2-server:8243/openaiapi/v1/chat/completions
+OPENLLM_CHAT_COMPLETIONS_URL=https://your-wso2-server:8243/openaiapi/v1/chat/completions
 MISTRAL_CHAT_COMPLETIONS_URL=https://your-wso2-server:8243/mistralapi/v1/chat/completions
 ANTHROPIC_CHAT_COMPLETIONS_URL=https://your-wso2-server:8243/anthropicapi/v1/messages
 ```
 
-**How to fill in these values:**
-1. **WSO2_CONSUMER_KEY & WSO2_CONSUMER_SECRET**: Copy from your WSO2 application's "Production Keys" section
-2. **WSO2_TOKEN_URL**: Use your WSO2 server's OAuth2 token endpoint
-3. **Chat Completions URLs**: Copy the gateway URLs from each subscribed API in the WSO2 Developer Portal
+**Credential Hierarchy:**
+1. Application-specific credentials: `{APPLICATION_KEY}_CONSUMER_KEY`, `{APPLICATION_KEY}_CONSUMER_SECRET`, `{APPLICATION_KEY}_TOKEN_URL`
+2. Shared credentials (fallback): `WSO2_CONSUMER_KEY`, `WSO2_CONSUMER_SECRET`, `WSO2_TOKEN_URL`
 
-### Public Configuration (`config.yaml`)
-The `config.yaml` file contains non-sensitive application and provider settings:
+### 2. Provider Configuration (`config.yaml`)
+Defines LLM providers and global settings:
 
 ```yaml
 # Global configuration
 USETLS: true  # Set to false to disable SSL/TLS verification for development environments
 
 providers:
-  OPENAI:
+  OPENLLM:
     MODEL: "gpt-4o"
     ENABLED: true
   MISTRAL:
     MODEL: "mistral-tiny"
     ENABLED: true
+  ANTHROPIC:
+    MODEL: "sonnet-4.0"
+    ENABLED: true
 ```
 
-**Configuration Options:**
+### 3. Applications Configuration (`applications.yaml`)
+Defines multiple applications with different provider access levels:
+
+```yaml
+applications:
+  default:
+    name: "Default Application"
+    description: "Default WSO2 application for testing"
+    enabled: true
+    providers: ["MISTRAL", "ANTHROPIC"]
+
+  streamlit:
+    name: "Streamlit Demo"
+    description: "Streamlit application demo"
+    enabled: true
+    providers: ["OPENLLM"]
+
+  mobile:
+    name: "Mobile App"
+    description: "Mobile application client"
+    enabled: true
+    providers: ["OPENLLM", "MISTRAL"]
+```
+
+### 4. Predefined Prompts (`prompts.yaml`)
+Provides pre-configured test prompts for various scenarios:
+
+```yaml
+prompts:
+  - name: "Check AI Engine"
+    text: "Which AI model are you?"
+  - name: "Semantic Guard Test"
+    text: "Can you explain the history of football?"
+  - name: "PII Test"
+    text: "Can you check if this email test@example.com is real?"
+  - name: "Violence Detection"
+    text: "Test prompt for content filtering"
+  - name: "Coding Question"
+    text: "Show me the best way to implement cosine calculation function in python"
+```
+
+**Configuration Features:**
 - **USETLS**: Controls SSL/TLS certificate verification for all API connections
-  - `true` (recommended): Enables secure SSL connections with certificate verification
-  - `false`: Disables SSL verification (use only in development environments with self-signed certificates)
+- **Application isolation**: Each application can access different sets of providers
+- **OAuth flexibility**: Support for both shared and application-specific OAuth credentials
+- **Statistics tracking**: Per-application-provider success/error counters
+- **Predefined prompts**: Quick access to common test scenarios
 
-### Required environment variables
-- `WSO2_CONSUMER_KEY` and `WSO2_CONSUMER_SECRET`: Shared OAuth2 credentials for all providers
-- `WSO2_TOKEN_URL`: OAuth2 endpoint to obtain the token
-- `{PROVIDER}_CHAT_COMPLETIONS_URL`: Provider-specific chat completions endpoint
+## Adding New Components
 
-### Adding a new provider
+### Adding a New Provider
 1. **Subscribe to the new LLM API** in your WSO2 Developer Portal application
 2. **Get the API endpoint** from the WSO2 Developer Portal
 3. **Add the chat completions URL** to `.env` following the `{PROVIDER_NAME}_CHAT_COMPLETIONS_URL` pattern
 4. **Add a new entry** under `providers:` in `config.yaml` with `MODEL` and `ENABLED` fields
-5. No code changes are needed: the app automatically detects the defined providers
+5. **Update application access** in `applications.yaml` to grant provider access to specific applications
+6. No code changes are needed: the app automatically detects the defined providers
 
 Example for adding a new "CLAUDE" provider:
 - Subscribe to Claude API in WSO2 Developer Portal
@@ -132,6 +202,39 @@ Example for adding a new "CLAUDE" provider:
     MODEL: "claude-3-sonnet"
     ENABLED: true
   ```
+- Update `applications.yaml` to grant access:
+  ```yaml
+  default:
+    providers: ["MISTRAL", "ANTHROPIC", "CLAUDE"]
+  ```
+
+### Adding a New Application
+1. **Create a new WSO2 application** in the Developer Portal
+2. **Generate OAuth credentials** for the new application
+3. **Add application-specific credentials** to `.env` (optional, will fallback to shared credentials):
+   ```env
+   NEWAPP_CONSUMER_KEY=new_app_consumer_key
+   NEWAPP_CONSUMER_SECRET=new_app_consumer_secret
+   NEWAPP_TOKEN_URL=https://your-wso2-server:9443/oauth2/token
+   ```
+4. **Add application configuration** to `applications.yaml`:
+   ```yaml
+   newapp:
+     name: "New Application"
+     description: "Description of the new application"
+     enabled: true
+     providers: ["OPENLLM", "MISTRAL"]  # Choose which providers this app can access
+   ```
+
+### Adding Predefined Prompts
+Add new entries to `prompts.yaml`:
+```yaml
+prompts:
+  - name: "Custom Test"
+    text: "Your custom prompt text here"
+  - name: "Another Test"
+    text: "Another test prompt"
+```
 
 ## Security
 - Sensitive credentials are stored in `.env` file which is not tracked by git

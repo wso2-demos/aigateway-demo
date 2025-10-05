@@ -146,4 +146,5 @@ README_NEW_ARCHITECTURE.md
 start_backend.sh
 start_frontend.sh
 # Python Cache
-_pycache
+__pycache__
+

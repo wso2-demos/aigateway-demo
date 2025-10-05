@@ -1,0 +1,48 @@
+# Applications configuration for AI Gateway Demo
+# Each application represents a different client that can access specific LLM providers
+# Applications have their own OAuth credentials for separate statistics tracking
+
+applications:
+  default:
+    name: "Default Application"
+    description: "Default WSO2 application for testing"
+    enabled: true
+    # List of providers this application can access
+    providers: ["MISTRAL", "ANTHROPIC"]
+    # OAuth credentials are loaded from environment variables:
+    # DEFAULT_CONSUMER_KEY, DEFAULT_CONSUMER_SECRET, DEFAULT_TOKEN_URL
+    # If not found, falls back to WSO2_CONSUMER_KEY, WSO2_CONSUMER_SECRET, WSO2_TOKEN_URL
+
+  streamlit:
+    name: "Streamlit"
+    description: "Streamlit"
+    enabled: true
+    # Mobile app only has access to OpenLLM and Mistral
+    providers: ["OPENLLM"]
+    # OAuth credentials loaded from environment variables:
+    # STREAMLIT_CONSUMER_KEY, STREAMLIT_CONSUMER_SECRET, STREAMLIT_TOKEN_URL
+
+  mathias:
+    name: "MathiasApp"
+    description: "Mathias Application"
+    enabled: true
+    # Mobile app only has access to OpenLLM and Mistral
+    providers: ["OPENLLM"]
+    # OAuth credentials loaded from environment variables:
+    # MATHIAS_CONSUMER_KEY, MATHIAS_CONSUMER_SECRET, MATHIAS_TOKEN_URL
+
+  mobile:
+    name: "MobileApp"
+    description: "Mobile Application (Basic)"
+    enabled: true
+    # Mobile app only has access to OpenLLM and Mistral
+    providers: ["OPENLLM"]
+    # OAuth credentials loaded from environment variables:
+    # MOBILE_CONSUMER_KEY, MOBILE_CONSUMER_SECRET, MOBILE_TOKEN_URL
+
+# Configuration notes:
+# 1. Each application must have corresponding environment variables in .env file
+# 2. Format: {APPLICATION_KEY}_CONSUMER_KEY, {APPLICATION_KEY}_CONSUMER_SECRET, {APPLICATION_KEY}_TOKEN_URL
+# 3. If application-specific variables are not found, it falls back to shared WSO2_* variables
+# 4. Applications with enabled: false will not appear in the UI selector
+# 5. The "providers" list determines which LLM providers are available for each application

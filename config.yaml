@@ -2,12 +2,15 @@
 USETLS: true  # Set to false to disable SSL/TLS verification for development environments
 
 providers:
-  OPENAI:
+  OPENLLM:
     MODEL: "gpt-4o"
     ENABLED: true
+    # OAUTH_PROVIDER: "custom_openai_oauth"  # Optional: specify a different OAuth provider
   MISTRAL:
     MODEL: "mistral-tiny"
     ENABLED: true
+    # OAUTH_PROVIDER: "custom_mistral_oauth"  # Optional: specify a different OAuth provider
   ANTHROPIC:
     MODEL: "sonnet-4.0"
-    ENABLED: false  
+    ENABLED: true
+    # OAUTH_PROVIDER: "custom_anthropic_oauth"  # Optional: specify a different OAuth provider
