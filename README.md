@@ -124,17 +124,22 @@ Defines LLM providers and global settings:
 ```yaml
 # Global configuration
 USETLS: true  # Set to false to disable SSL/TLS verification for development environments
+USER_AGENT: "WSO2-AI-Gateway-Demo/1.0"  # Custom User-Agent for all LLM API calls
 
 providers:
   OPENLLM:
     MODEL: "gpt-4o"
+    DESCRIPTION: "OpenAI GPT-4o - Advanced reasoning and multimodal capabilities"
     ENABLED: true
   MISTRAL:
     MODEL: "mistral-tiny"
+    DESCRIPTION: "Mistral AI - Fast and efficient European LLM"
     ENABLED: true
   ANTHROPIC:
     MODEL: "sonnet-4.0"
+    DESCRIPTION: "Anthropic Claude - Helpful, harmless, and honest AI assistant"
     ENABLED: true
+    # USER_AGENT: "Custom-Anthropic-Client/1.0"  # Optional: provider-specific User-Agent override
 ```
 
 ### 3. Applications Configuration (`applications.yaml`)
@@ -180,6 +185,7 @@ prompts:
 
 **Configuration Features:**
 - **USETLS**: Controls SSL/TLS certificate verification for all API connections
+- **USER_AGENT**: Global User-Agent for all API calls, with optional provider-specific overrides
 - **Application isolation**: Each application can access different sets of providers
 - **OAuth flexibility**: Support for both shared and application-specific OAuth credentials
 - **Statistics tracking**: Per-application-provider success/error counters
@@ -191,7 +197,7 @@ prompts:
 1. **Subscribe to the new LLM API** in your WSO2 Developer Portal application
 2. **Get the API endpoint** from the WSO2 Developer Portal
 3. **Add the chat completions URL** to `.env` following the `{PROVIDER_NAME}_CHAT_COMPLETIONS_URL` pattern
-4. **Add a new entry** under `providers:` in `config.yaml` with `MODEL` and `ENABLED` fields
+4. **Add a new entry** under `providers:` in `config.yaml` with `MODEL`, `DESCRIPTION`, and `ENABLED` fields
 5. **Update application access** in `applications.yaml` to grant provider access to specific applications
 6. No code changes are needed: the app automatically detects the defined providers
 
@@ -202,6 +208,7 @@ Example for adding a new "CLAUDE" provider:
   ```yaml
   CLAUDE:
     MODEL: "claude-3-sonnet"
+    DESCRIPTION: "Claude 3 Sonnet - Balanced performance and capability"
     ENABLED: true
   ```
 - Update `applications.yaml` to grant access:
@@ -237,6 +244,9 @@ prompts:
   - name: "Another Test"
     text: "Another test prompt"
 ```
+
+### Demo Setup
+
 
 ## Security
 - Sensitive credentials are stored in `.env` file which is not tracked by git

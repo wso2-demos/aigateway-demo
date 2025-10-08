@@ -5,17 +5,17 @@
 applications:
   default:
     name: "Default Application"
-    description: "Default WSO2 application for testing"
+    description: "Dev: All LLMs"
     enabled: true
     # List of providers this application can access
-    providers: ["MISTRAL", "ANTHROPIC"]
+    providers: ["MISTRAL", "OPENAI"]
     # OAuth credentials are loaded from environment variables:
     # DEFAULT_CONSUMER_KEY, DEFAULT_CONSUMER_SECRET, DEFAULT_TOKEN_URL
     # If not found, falls back to WSO2_CONSUMER_KEY, WSO2_CONSUMER_SECRET, WSO2_TOKEN_URL
 
   streamlit:
     name: "Streamlit"
-    description: "Streamlit"
+    description: "Next Streamlit"
     enabled: true
     providers: ["OPENLLM"]
     # OAuth credentials loaded from environment variables:
@@ -23,7 +23,7 @@ applications:
 
   mathias:
     name: "MathiasApp"
-    description: "Mathias Application"
+    description: "Next: MathiasApp"
     enabled: true
     providers: ["OPENLLM"]
     # OAuth credentials loaded from environment variables:
@@ -31,7 +31,7 @@ applications:
 
   mobile:
     name: "MobileApp"
-    description: "Mobile Application (Basic)"
+    description: "Next: MobileApp (Basic)"
     enabled: true
     providers: ["OPENLLM"]
     # OAuth credentials loaded from environment variables:
@@ -39,7 +39,7 @@ applications:
 
   cloud:
     name: "CloudApp"
-    description: "Cloud Application (Basic)"
+    description: "Bijira Application (Basic)"
     enabled: true
     providers: ["ANTHROPIC_CLOUD"]
     # OAuth credentials loaded from environment variables:

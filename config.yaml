@@ -1,16 +1,25 @@
 # Global configuration
 USETLS: true  # Set to false to disable SSL/TLS verification for development environments
+USER_AGENT: "WSO2-AI-Gateway-Demo/1.0"  # Custom User-Agent for all LLM API calls
 
 providers:
   OPENLLM:
     MODEL: "gpt-4o"
+    DESCRIPTION: "Universal LLM Access (Default OpenAI)"
     ENABLED: true
+  OPENAI:
+    MODEL: "gpt-4o"
+    DESCRIPTION: "Open AI GPT 40 (UNSECURE)"
+    ENABLED: true  
   MISTRAL:
     MODEL: "mistral-tiny"
+    DESCRIPTION: "Mistral AI Tiny (SECURE)"
     ENABLED: true
   ANTHROPIC:
     MODEL: "sonnet-4.0"
+    DESCRIPTION: "Anthropic Claude - Sonnet 4.0"
     ENABLED: true
   ANTHROPIC_CLOUD:
     MODEL: "sonnet-4.0"
+    DESCRIPTION: "Anthropic Claude - Sonnet 4.0"
     ENABLED: true

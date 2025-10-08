@@ -175,9 +175,13 @@ def acquire_oauth_token(application_config):
     }
 
     print(f"[LOG] Requesting new token from: {token_url} with client_id: {consumer_key}")
+    token_headers = {
+        "User-Agent": config.get("USER_AGENT", "WSO2-AI-Gateway-Demo/1.0")
+    }
     token_response = requests.post(
         token_url,
         data=token_data,
+        headers=token_headers,
         auth=HTTPBasicAuth(consumer_key, consumer_secret),
         verify=use_tls
     )
@@ -227,7 +231,7 @@ if hasattr(st, 'sidebar'):
     selected_app = st.sidebar.selectbox(
         t('select_application'),
         application_keys,
-        format_func=lambda app_key: applications_config["applications"][app_key]["name"]
+        format_func=lambda app_key: applications_config["applications"][app_key].get("description", applications_config["applications"][app_key]["name"])
     )
 else:
     lang = 'en'
@@ -550,7 +554,12 @@ st.markdown(titulo_interaccion, unsafe_allow_html=True)
 
 # Select dinámico de proveedores y etiquetas
 if available_provider_keys:
-    provider = st.selectbox(t('select_provider'), available_provider_keys, index=0)
+    provider = st.selectbox(
+        t('select_provider'),
+        available_provider_keys,
+        index=0,
+        format_func=lambda provider_key: config["providers"][provider_key].get("DESCRIPTION", provider_key)
+    )
 else:
     st.error("No providers available for this application")
     st.stop()
@@ -604,10 +613,17 @@ if st.button(t('send'), type="primary"):
     try:
         access_token = acquire_oauth_token(app_oauth_config)
         # Paso 2: Hacer la llamada a la API con el token obtenido
+        # Get User-Agent: provider-specific > global > default
+        user_agent = (
+            provider_config.get("USER_AGENT") or
+            config.get("USER_AGENT") or
+            "WSO2-AI-Gateway-Demo/1.0"
+        )
         headers = {
             "accept": "application/json",
             "Content-Type": "application/json",
-            "Authorization": f"Bearer {access_token}"
+            "Authorization": f"Bearer {access_token}",
+            "User-Agent": user_agent
         }
         payload = {
             "model": model,
