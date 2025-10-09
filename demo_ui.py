@@ -14,7 +14,7 @@ import tiktoken
 from localization import t, set_lang, get_lang
 
 # ------------------------------
-# Script para llamar a OpenAI vía WSO2
+# Script to call OpenAI via WSO2
 # ------------------------------
 
 # Load environment variables from .env file
@@ -537,7 +537,7 @@ st.markdown(
 st.markdown("<hr style='margin:0 0 20px 0;border:1px solid #FF5000;'>", unsafe_allow_html=True)
 
 
-# Contadores dinámicos con look WSO2 para todos los proveedores definidos en el YAML
+# Show dynamic counters for all providers defined in the YAML
 cols = st.columns(len(available_provider_keys))
 for idx, prov in enumerate(available_provider_keys):
     cols[idx].markdown(f"""
@@ -548,11 +548,11 @@ for idx, prov in enumerate(available_provider_keys):
 st.markdown("<hr style='margin:20px 0 20px 0;border:1px solid #FF5000;'>", unsafe_allow_html=True)
 
 
-# Sección de interacción
+# Interaction section
 titulo_interaccion = f"<div class='interaction-title' style='font-size:1.5rem;font-weight:bold;margin:20px 0 10px 0;'>{t('select_and_ask')}</div>"
 st.markdown(titulo_interaccion, unsafe_allow_html=True)
 
-# Select dinámico de proveedores y etiquetas
+# Dynamic provider and label selection
 if available_provider_keys:
     provider = st.selectbox(
         t('select_provider'),
@@ -609,10 +609,10 @@ if st.button(t('send'), type="primary"):
     if len(user_question) > 5000:
         st.error(t('question_too_long', max_length=5000))
         st.stop()
-    # Paso 1: Obtener el access token automáticamente
+    # Step 1: Obtain access token automatically
     try:
         access_token = acquire_oauth_token(app_oauth_config)
-        # Paso 2: Hacer la llamada a la API con el token obtenido
+        # Step 2: Make API call with obtained token
         # Get User-Agent: provider-specific > global > default
         user_agent = (
             provider_config.get("USER_AGENT") or
@@ -674,7 +674,7 @@ if st.button(t('send'), type="primary"):
                 error_json = api_response.json()
                 print(f"[ERROR] API error JSON: {error_json}")
                 if isinstance(error_json, dict) and str(error_json.get("code")) == "900514":
-                    # Mostrar el motivo real del bloqueo
+                    # Show actual blocking reason
                     reason = None
                     if (
                         "message" in error_json
@@ -687,7 +687,7 @@ if st.button(t('send'), type="primary"):
                             reason = t('blocked_url', urls=invalid_urls)
                         elif isinstance(assessments, str):
                             reason = assessments
-                    # Si no hay assessments, intenta mostrar actionReason o el mensaje original
+                    # If no assessments, try to show actionReason or original message
                     if not reason:
                         if (
                             "message" in error_json
@@ -722,7 +722,7 @@ if st.button(t('send'), type="primary"):
             st.session_state[f"last_response_{selected_app}_{provider}"] = t('api_request_error', error=error_message)
         st.rerun()
 
-# Mostrar la última respuesta si existe (después del botón)
+# Display last response if it exists (after button)
 if f"last_response_{selected_app}_{provider}" in st.session_state:
     st.markdown("<div style='margin-top:20px;'></div>", unsafe_allow_html=True)
     st.text_area(answer_label, value=st.session_state[f"last_response_{selected_app}_{provider}"], height=200)
